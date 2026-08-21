@@ -1,0 +1,795 @@
+package monitoramento;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Monitoramento {
+
+    // ============================================================
+    // CLASSE REGISTROSISTEMA
+    // Guarda as informações de cada computador/servidor monitorado
+    // ============================================================
+
+    static class RegistroSistema {
+
+        private String nome;
+        private String status;
+        private int cpu;
+        private int tempoResposta;
+        private int memoria;
+        private String sistemaOperacional;
+        private String ip;
+        private int temperatura;
+
+        // Construtor
+        public RegistroSistema(
+                String nome,
+                String status,
+                int cpu,
+                int tempoResposta,
+                int memoria,
+                String sistemaOperacional,
+                String ip,
+                int temperatura) {
+
+            this.nome = nome;
+            this.status = status;
+            this.cpu = cpu;
+            this.tempoResposta = tempoResposta;
+            this.memoria = memoria;
+            this.sistemaOperacional = sistemaOperacional;
+            this.ip = ip;
+            this.temperatura = temperatura;
+        }
+
+        // ========================================================
+        // GETTERS
+        // ========================================================
+
+        public String getNome() {
+            return nome;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public int getCpu() {
+            return cpu;
+        }
+
+        public int getTempoResposta() {
+            return tempoResposta;
+        }
+
+        public int getMemoria() {
+            return memoria;
+        }
+
+        public String getSistemaOperacional() {
+            return sistemaOperacional;
+        }
+
+        public String getIp() {
+            return ip;
+        }
+
+        public int getTemperatura() {
+            return temperatura;
+        }
+
+        // ========================================================
+        // SETTERS
+        // ========================================================
+
+        public void setNome(String nome) {
+            this.nome = nome;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public void setCpu(int cpu) {
+            this.cpu = cpu;
+        }
+
+        public void setTempoResposta(int tempoResposta) {
+            this.tempoResposta = tempoResposta;
+        }
+
+        public void setMemoria(int memoria) {
+            this.memoria = memoria;
+        }
+
+        public void setSistemaOperacional(String sistemaOperacional) {
+            this.sistemaOperacional = sistemaOperacional;
+        }
+
+        public void setIp(String ip) {
+            this.ip = ip;
+        }
+
+        public void setTemperatura(int temperatura) {
+            this.temperatura = temperatura;
+        }
+
+        // ========================================================
+        // MÉTODO PARA EXIBIR OS DADOS
+        // ========================================================
+
+        public void exibirInformacoes() {
+
+            System.out.println("---------------------------------------------");
+            System.out.println("Nome: " + nome);
+            System.out.println("Status: " + status);
+            System.out.println("CPU: " + cpu + "%");
+            System.out.println("Memória: " + memoria + "%");
+            System.out.println("Tempo de resposta: " + tempoResposta + " ms");
+            System.out.println("Sistema operacional: " + sistemaOperacional);
+            System.out.println("Endereço IP: " + ip);
+            System.out.println("Temperatura: " + temperatura + " °C");
+            System.out.println("---------------------------------------------");
+        }
+
+        // ========================================================
+        // VERIFICA SE O SERVIDOR ESTÁ COM PROBLEMA
+        // ========================================================
+
+        public boolean estaComProblema() {
+
+            if (status.equalsIgnoreCase("OFFLINE")) {
+                return true;
+            }
+
+            if (cpu >= 90) {
+                return true;
+            }
+
+            if (memoria >= 90) {
+                return true;
+            }
+
+            if (tempoResposta >= 500) {
+                return true;
+            }
+
+            if (temperatura >= 80) {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    // ============================================================
+    // LISTA QUE ARMAZENA OS COMPUTADORES
+    // ============================================================
+
+    static ArrayList<RegistroSistema> registros = new ArrayList<>();
+
+    static Scanner scanner = new Scanner(System.in);
+
+    // ============================================================
+    // MÉTODO PRINCIPAL
+    // ============================================================
+
+    public static void main(String[] args) {
+
+        carregarDadosIniciais();
+
+        int opcao;
+
+        do {
+
+            exibirMenu();
+
+            opcao = lerInteiro("Escolha uma opção: ");
+
+            switch (opcao) {
+
+                case 1:
+                    cadastrarSistema();
+                    break;
+
+                case 2:
+                    listarSistemas();
+                    break;
+
+                case 3:
+                    buscarSistema();
+                    break;
+
+                case 4:
+                    alterarStatus();
+                    break;
+
+                case 5:
+                    atualizarMonitoramento();
+                    break;
+
+                case 6:
+                    listarProblemas();
+                    break;
+
+                case 7:
+                    gerarRelatorio();
+                    break;
+
+                case 8:
+                    excluirSistema();
+                    break;
+
+                case 9:
+                    System.out.println();
+                    System.out.println("=============================================");
+                    System.out.println("Sistema encerrado.");
+                    System.out.println("Obrigado por utilizar o Monitoramento!");
+                    System.out.println("=============================================");
+                    break;
+
+                default:
+                    System.out.println();
+                    System.out.println("Opção inválida!");
+                    break;
+            }
+
+        } while (opcao != 9);
+
+        scanner.close();
+    }
+
+    // ============================================================
+    // MENU PRINCIPAL
+    // ============================================================
+
+    public static void exibirMenu() {
+
+        System.out.println();
+        System.out.println("=============================================");
+        System.out.println("       SISTEMA DE MONITORAMENTO");
+        System.out.println("=============================================");
+        System.out.println("1 - Cadastrar sistema");
+        System.out.println("2 - Listar sistemas");
+        System.out.println("3 - Buscar sistema");
+        System.out.println("4 - Alterar status");
+        System.out.println("5 - Atualizar monitoramento");
+        System.out.println("6 - Listar sistemas com problemas");
+        System.out.println("7 - Gerar relatório");
+        System.out.println("8 - Excluir sistema");
+        System.out.println("9 - Sair");
+        System.out.println("=============================================");
+    }
+
+    // ============================================================
+    // CADASTRAR SISTEMA
+    // ============================================================
+
+    public static void cadastrarSistema() {
+
+        System.out.println();
+        System.out.println("=============================================");
+        System.out.println("           CADASTRO DE SISTEMA");
+        System.out.println("=============================================");
+
+        String nome = lerTexto("Nome do sistema: ");
+
+        // Verifica se já existe
+        if (procurarPorNome(nome) != null) {
+
+            System.out.println();
+            System.out.println("Já existe um sistema com esse nome.");
+            return;
+        }
+
+        String status = lerTexto("Status (ONLINE/OFFLINE): ");
+
+        int cpu = lerPercentual("Uso da CPU (%): ");
+
+        int memoria = lerPercentual("Uso da memória (%): ");
+
+        int tempoResposta =
+                lerInteiroPositivo("Tempo de resposta (ms): ");
+
+        String sistemaOperacional =
+                lerTexto("Sistema operacional: ");
+
+        String ip =
+                lerTexto("Endereço IP: ");
+
+        int temperatura =
+                lerInteiroPositivo("Temperatura (°C): ");
+
+        RegistroSistema novoSistema =
+                new RegistroSistema(
+                        nome,
+                        status,
+                        cpu,
+                        tempoResposta,
+                        memoria,
+                        sistemaOperacional,
+                        ip,
+                        temperatura
+                );
+
+        registros.add(novoSistema);
+
+        System.out.println();
+        System.out.println("Sistema cadastrado com sucesso!");
+    }
+
+    // ============================================================
+    // LISTAR TODOS OS SISTEMAS
+    // ============================================================
+
+    public static void listarSistemas() {
+
+        System.out.println();
+        System.out.println("=============================================");
+        System.out.println("           SISTEMAS MONITORADOS");
+        System.out.println("=============================================");
+
+        if (registros.isEmpty()) {
+
+            System.out.println("Nenhum sistema cadastrado.");
+
+            return;
+        }
+
+        for (int i = 0; i < registros.size(); i++) {
+
+            System.out.println();
+            System.out.println("Sistema #" + (i + 1));
+
+            registros.get(i).exibirInformacoes();
+        }
+    }
+
+    // ============================================================
+    // BUSCAR SISTEMA
+    // ============================================================
+
+    public static void buscarSistema() {
+
+        System.out.println();
+        System.out.println("=============================================");
+        System.out.println("             BUSCAR SISTEMA");
+        System.out.println("=============================================");
+
+        String nome = lerTexto("Digite o nome do sistema: ");
+
+        RegistroSistema sistema = procurarPorNome(nome);
+
+        if (sistema == null) {
+
+            System.out.println();
+            System.out.println("Sistema não encontrado.");
+
+        } else {
+
+            System.out.println();
+            System.out.println("Sistema encontrado:");
+
+            sistema.exibirInformacoes();
+        }
+    }
+
+    // ============================================================
+    // PROCURAR POR NOME
+    // ============================================================
+
+    public static RegistroSistema procurarPorNome(String nome) {
+
+        for (RegistroSistema sistema : registros) {
+
+            if (sistema.getNome().equalsIgnoreCase(nome)) {
+
+                return sistema;
+            }
+        }
+
+        return null;
+    }
+
+    // ============================================================
+    // ALTERAR STATUS
+    // ============================================================
+
+    public static void alterarStatus() {
+
+        System.out.println();
+        System.out.println("=============================================");
+        System.out.println("             ALTERAR STATUS");
+        System.out.println("=============================================");
+
+        String nome = lerTexto("Nome do sistema: ");
+
+        RegistroSistema sistema = procurarPorNome(nome);
+
+        if (sistema == null) {
+
+            System.out.println("Sistema não encontrado.");
+
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Status atual: " + sistema.getStatus());
+
+        String novoStatus =
+                lerTexto("Novo status (ONLINE/OFFLINE): ");
+
+        sistema.setStatus(novoStatus);
+
+        System.out.println();
+        System.out.println("Status atualizado com sucesso!");
+    }
+
+    // ============================================================
+    // ATUALIZAR MONITORAMENTO
+    // ============================================================
+
+    public static void atualizarMonitoramento() {
+
+        System.out.println();
+        System.out.println("=============================================");
+        System.out.println("        ATUALIZAR MONITORAMENTO");
+        System.out.println("=============================================");
+
+        String nome = lerTexto("Nome do sistema: ");
+
+        RegistroSistema sistema = procurarPorNome(nome);
+
+        if (sistema == null) {
+
+            System.out.println("Sistema não encontrado.");
+
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Sistema encontrado.");
+        System.out.println();
+
+        int cpu =
+                lerPercentual("Novo uso da CPU (%): ");
+
+        int memoria =
+                lerPercentual("Novo uso da memória (%): ");
+
+        int tempo =
+                lerInteiroPositivo("Novo tempo de resposta (ms): ");
+
+        int temperatura =
+                lerInteiroPositivo("Nova temperatura (°C): ");
+
+        sistema.setCpu(cpu);
+        sistema.setMemoria(memoria);
+        sistema.setTempoResposta(tempo);
+        sistema.setTemperatura(temperatura);
+
+        System.out.println();
+        System.out.println("Monitoramento atualizado!");
+    }
+
+    // ============================================================
+    // LISTAR SISTEMAS COM PROBLEMAS
+    // ============================================================
+
+    public static void listarProblemas() {
+
+        System.out.println();
+        System.out.println("=============================================");
+        System.out.println("       SISTEMAS COM PROBLEMAS");
+        System.out.println("=============================================");
+
+        boolean encontrouProblema = false;
+
+        for (RegistroSistema sistema : registros) {
+
+            if (sistema.estaComProblema()) {
+
+                sistema.exibirInformacoes();
+
+                encontrouProblema = true;
+            }
+        }
+
+        if (!encontrouProblema) {
+
+            System.out.println();
+            System.out.println("Nenhum problema encontrado.");
+        }
+    }
+
+    // ============================================================
+    // GERAR RELATÓRIO
+    // ============================================================
+
+    public static void gerarRelatorio() {
+
+        System.out.println();
+        System.out.println("=============================================");
+        System.out.println("             RELATÓRIO GERAL");
+        System.out.println("=============================================");
+
+        int total = registros.size();
+
+        int online = 0;
+        int offline = 0;
+        int problemas = 0;
+
+        int somaCpu = 0;
+        int somaMemoria = 0;
+        int somaTempo = 0;
+
+        for (RegistroSistema sistema : registros) {
+
+            if (sistema.getStatus().equalsIgnoreCase("ONLINE")) {
+
+                online++;
+
+            } else {
+
+                offline++;
+            }
+
+            if (sistema.estaComProblema()) {
+
+                problemas++;
+            }
+
+            somaCpu += sistema.getCpu();
+
+            somaMemoria += sistema.getMemoria();
+
+            somaTempo += sistema.getTempoResposta();
+        }
+
+        System.out.println();
+
+        System.out.println("Total de sistemas: " + total);
+
+        System.out.println("Sistemas online: " + online);
+
+        System.out.println("Sistemas offline: " + offline);
+
+        System.out.println("Sistemas com problemas: " + problemas);
+
+        if (total > 0) {
+
+            double mediaCpu =
+                    (double) somaCpu / total;
+
+            double mediaMemoria =
+                    (double) somaMemoria / total;
+
+            double mediaTempo =
+                    (double) somaTempo / total;
+
+            System.out.printf(
+                    "Média de CPU: %.2f%%%n",
+                    mediaCpu
+            );
+
+            System.out.printf(
+                    "Média de memória: %.2f%%%n",
+                    mediaMemoria
+            );
+
+            System.out.printf(
+                    "Média de resposta: %.2f ms%n",
+                    mediaTempo
+            );
+        }
+
+        System.out.println();
+        System.out.println("=============================================");
+    }
+
+    // ============================================================
+    // EXCLUIR SISTEMA
+    // ============================================================
+
+    public static void excluirSistema() {
+
+        System.out.println();
+        System.out.println("=============================================");
+        System.out.println("             EXCLUIR SISTEMA");
+        System.out.println("=============================================");
+
+        String nome = lerTexto("Nome do sistema: ");
+
+        RegistroSistema sistema = procurarPorNome(nome);
+
+        if (sistema == null) {
+
+            System.out.println("Sistema não encontrado.");
+
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Sistema encontrado:");
+
+        sistema.exibirInformacoes();
+
+        String confirmacao =
+                lerTexto("Deseja realmente excluir? (S/N): ");
+
+        if (confirmacao.equalsIgnoreCase("S")) {
+
+            registros.remove(sistema);
+
+            System.out.println();
+            System.out.println("Sistema excluído com sucesso!");
+
+        } else {
+
+            System.out.println();
+            System.out.println("Operação cancelada.");
+        }
+    }
+
+    // ============================================================
+    // CARREGAR DADOS INICIAIS
+    // ============================================================
+
+    public static void carregarDadosIniciais() {
+
+        RegistroSistema servidor1 =
+                new RegistroSistema(
+                        "Servidor-Web-01",
+                        "ONLINE",
+                        45,
+                        120,
+                        55,
+                        "Linux Ubuntu",
+                        "192.168.0.10",
+                        52
+                );
+
+        RegistroSistema servidor2 =
+                new RegistroSistema(
+                        "Servidor-Banco-01",
+                        "ONLINE",
+                        92,
+                        650,
+                        94,
+                        "Windows Server",
+                        "192.168.0.20",
+                        82
+                );
+
+        RegistroSistema servidor3 =
+                new RegistroSistema(
+                        "Servidor-Arquivos",
+                        "OFFLINE",
+                        0,
+                        0,
+                        0,
+                        "Linux Debian",
+                        "192.168.0.30",
+                        30
+                );
+
+        RegistroSistema servidor4 =
+                new RegistroSistema(
+                        "Servidor-Backup",
+                        "ONLINE",
+                        30,
+                        90,
+                        40,
+                        "Linux Ubuntu",
+                        "192.168.0.40",
+                        48
+                );
+
+        RegistroSistema servidor5 =
+                new RegistroSistema(
+                        "Servidor-API",
+                        "ONLINE",
+                        78,
+                        350,
+                        72,
+                        "Linux Ubuntu",
+                        "192.168.0.50",
+                        65
+                );
+
+        registros.add(servidor1);
+        registros.add(servidor2);
+        registros.add(servidor3);
+        registros.add(servidor4);
+        registros.add(servidor5);
+    }
+
+    // ============================================================
+    // LER TEXTO
+    // ============================================================
+
+    public static String lerTexto(String mensagem) {
+
+        while (true) {
+
+            System.out.print(mensagem);
+
+            String texto = scanner.nextLine().trim();
+
+            if (!texto.isEmpty()) {
+
+                return texto;
+            }
+
+            System.out.println(
+                    "O campo não pode ficar vazio."
+            );
+        }
+    }
+
+    // ============================================================
+    // LER NÚMERO INTEIRO
+    // ============================================================
+
+    public static int lerInteiro(String mensagem) {
+
+        while (true) {
+
+            try {
+
+                System.out.print(mensagem);
+
+                int valor =
+                        Integer.parseInt(scanner.nextLine());
+
+                return valor;
+
+            } catch (NumberFormatException e) {
+
+                System.out.println(
+                        "Digite apenas números."
+                );
+            }
+        }
+    }
+
+    // ============================================================
+    // LER NÚMERO POSITIVO
+    // ============================================================
+
+    public static int lerInteiroPositivo(String mensagem) {
+
+        while (true) {
+
+            int valor = lerInteiro(mensagem);
+
+            if (valor >= 0) {
+
+                return valor;
+            }
+
+            System.out.println(
+                    "O valor não pode ser negativo."
+            );
+        }
+    }
+
+    // ============================================================
+    // LER PORCENTAGEM
+    // ============================================================
+
+    public static int lerPercentual(String mensagem) {
+
+        while (true) {
+
+            int valor = lerInteiro(mensagem);
+
+            if (valor >= 0 && valor <= 100) {
+
+                return valor;
+            }
+
+            System.out.println(
+                    "Digite um valor entre 0 e 100."
+            );
+        }
+    }
