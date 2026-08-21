@@ -141,19 +141,19 @@ public class Monitoramento {
                 return true;
             }
 
-            if (cpu >= 90) {
+            if (cpu >= 85) {
                 return true;
             }
 
-            if (memoria >= 90) {
+            if (memoria >= 95) {
                 return true;
             }
 
-            if (tempoResposta >= 500) {
+            if (tempoResposta >= 300) {
                 return true;
             }
 
-            if (temperatura >= 80) {
+            if (temperatura >= 75) {
                 return true;
             }
 
@@ -663,13 +663,13 @@ public class Monitoramento {
         RegistroSistema servidor3 =
                 new RegistroSistema(
                         "Servidor-Arquivos",
-                        "OFFLINE",
-                        0,
-                        0,
-                        0,
+                        "ONLINE",
+                        65,
+                        180,
+                        60,
                         "Linux Debian",
                         "192.168.0.30",
-                        30
+                        55
                 );
 
         RegistroSistema servidor4 =
@@ -721,7 +721,7 @@ public class Monitoramento {
             }
 
             System.out.println(
-                    "O campo não pode ficar vazio."
+                    "O campo não pode ficar vazio.Obrigado!"
             );
         }
     }
